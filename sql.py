@@ -13,4 +13,12 @@ dfPe=pd.read_csv(url_pedidos)
 dfPr=pd.read_csv(url_produto)
 dfVe=pd.read_csv(url_vendedores)
 
-print(dfIP.head(),dfPe.head(),dfPr.head(),dfVe.head())
+Engine = create_engine('sqlite:///:memory:')
+
+dfIP.to_sql('Itens',Engine,index=False)
+dfPe.to_sql('Pedidos',Engine,index=False)
+dfPr.to_sql('Produto',Engine,index=False)
+dfVe.to_sql('Vendedor',Engine,index=False)
+
+inspector=inspect(Engine)
+print(inspector.get_table_names())
