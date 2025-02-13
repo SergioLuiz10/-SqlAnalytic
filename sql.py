@@ -20,14 +20,20 @@ dfPr.to_sql('Produto', engine, index=False, if_exists='replace')
 dfVe.to_sql('Vendedor', engine, index=False, if_exists='replace')
 
 inspector = inspect(engine)
-query = 'SELECT Condicao FROM Produto'  
+query = 'SELECT condicao FROM Produto'  
 
 
-def sqlConect(query):
+def sqlConDf(query):
     with engine.connect() as conexao:
         consulta = conexao.execute(text(query))
         dados = consulta.fetchall()
         return pd.DataFrame(dados, columns=consulta.keys())  
        
 
-sqlConect(query)
+query ='SELECT condicao, COUNT(*) AS quantidade FROM Produto GROUP BY condicao;'
+dfPr=sqlConDf(query)
+dfPr
+
+plt.bar(dfPr["Condicao"],dfPr["quantidade"],color="blue")
+plt.title("Condição dos produtos")
+plt.show()
