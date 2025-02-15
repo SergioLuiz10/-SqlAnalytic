@@ -31,14 +31,12 @@ FROM Produto
 GROUP BY condicao;
 '''
 df_condicao = sqlConDf(query)
-print(df_condicao)
 
 plt.figure(figsize=(10,5))
 plt.bar(df_condicao["Condicao"], df_condicao["quantidade"], color="blue")
 plt.title("Condição dos produtos")
 plt.xlabel("Condição")
 plt.ylabel("Quantidade")
-plt.show()
 
 query = '''
 SELECT Produto.Produto, SUM(Itens.QUANTIDADE) AS Quantidade
@@ -55,4 +53,21 @@ plt.barh(df_rank['produto'], df_rank["Quantidade"], color="green")
 plt.title("Rank Das 3 Peças Mais Vendidas (Usadas)")
 plt.xlabel("Quantidade Vendida")
 plt.yticks( fontsize=8)  
-plt.show()
+
+query = '''
+SELECT SUM(valor_total) AS Receita_Total
+FROM Itens;
+'''
+df_receita = sqlConDf(query)
+
+receita_total = df_receita["Receita_Total"].iloc[0]
+
+plt.figure(figsize=(6, 4))
+plt.bar(["Receita Total"], [receita_total], color="red")
+plt.title("Receita Total das Vendas")
+plt.ylabel("Valor (R$)")
+
+
+print(dfPe.head(15))
+print(dfIP.head(15))
+print(dfPr.head(15))
