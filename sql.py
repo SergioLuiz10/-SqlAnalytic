@@ -25,11 +25,9 @@ def sqlConDf(query):
         dados = consulta.fetchall()
         return pd.DataFrame(dados, columns=consulta.keys())
 
-query = '''
-SELECT condicao AS "Condicao", COUNT(*) AS quantidade 
-FROM Produto 
-GROUP BY condicao;
-'''
+query = '''SELECT condicao AS "Condicao", COUNT(*) AS quantidade 
+    FROM Produto 
+    GROUP BY condicao;'''
 df_condicao = sqlConDf(query)
 
 plt.figure(figsize=(10,5))
@@ -54,20 +52,29 @@ plt.title("Rank Das 3 Peças Mais Vendidas (Usadas)")
 plt.xlabel("Quantidade Vendida")
 plt.yticks( fontsize=8)  
 
+
 query = '''
-SELECT SUM(valor_total) AS Receita_Total
-FROM Itens;
+    SELECT SUM(valor_total) AS Receita_Total
+    FROM Itens;
 '''
 df_receita = sqlConDf(query)
 
 receita_total = df_receita["Receita_Total"].iloc[0]
 
-plt.figure(figsize=(6, 4))
-plt.bar(["Receita Total"], [receita_total], color="red")
-plt.title("Receita Total das Vendas")
-plt.ylabel("Valor (R$)")
+query = '''
+    SELECT Vendedor.nome_vendedor, AVG(Pedidos.pedido_id) AS quantVendas2020
+    FROM Pedidos
+    JOIN Vendedor ON Vendedor.vendedor_id = Pedidos.vendedor_id
+    WHERE strftime('%Y', data_compra) = '2020'
+    GROUP BY Vendedor.nome_vendedor
+    ORDER BY Vendedor.nome_vendedor desc
+    LIMIT 10;
+'''
+df_2020 = sqlConDf(query)
 
-
-print(dfPe.head(15))
-print(dfIP.head(15))
-print(dfPr.head(15))
+plt.figure(figsize=(12,4))
+plt.bar(df_2020["nome_vendedor"], df_2020["quantVendas2020"], color="red")
+plt.title("Vendas em 2020")
+plt.xlabel("Vendedores")
+plt.ylabel("Quantidade")
+plt.show()
