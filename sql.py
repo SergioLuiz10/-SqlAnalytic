@@ -72,9 +72,23 @@ query = '''
 '''
 df_2020 = sqlConDf(query)
 
-plt.figure(figsize=(12,4))
+plt.figure(figsize=(10,6))
 plt.bar(df_2020["nome_vendedor"], df_2020["quantVendas2020"], color="red")
 plt.title("Vendas em 2020")
 plt.xlabel("Vendedores")
 plt.ylabel("Quantidade")
-plt.show()
+
+query=''' SELECT PRODUTOS.PRODUTO, COUNT (PEDIDOS.PEDIDO_ID) AS TOTAL_PEDIDOS
+FROM PEDIDOS, PRODUTOS
+WHERE strftime('%Y', data_compra) = '2019' AND PEDIDOS.PRODUTO_ID = PRODUTOS.PRODUTO_ID
+GROUP BY PRODUTOS.PRODUTO
+ORDER BY TOTAL_PEDIDOS DESC
+LIMIT 10;'''
+
+query=''' SELECT Itens.Estado ,Count(*) AS Estados_Vendas
+From itens
+GROUP BY  Itens.Estado
+ORDER BY  Estados_Vendas DESC 
+LIMIT 3;'''
+dfEstado=sqlConDf(query)
+print(dfEstado)
