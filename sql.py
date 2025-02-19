@@ -91,4 +91,24 @@ GROUP BY  Itens.Estado
 ORDER BY  Estados_Vendas DESC 
 LIMIT 3;'''
 dfEstado=sqlConDf(query)
-print(dfEstado)
+
+plt.figure(figsize=(10,4))
+plt.bar(dfEstado["Estado"],dfEstado["Estados_Vendas"],color="brown")
+plt.title("Os 3 Estados com mais vendas",fontsize=10)
+plt.xlabel("Estados")
+plt.ylabel("Quantidade de Vendas")
+
+
+query=''' SELECT Vendedor.Nome_vendedor, COUNT(*) AS quantidade
+FROM Pedidos
+JOIN Vendedor ON Vendedor.Vendedor_id = Pedidos.Vendedor_id
+JOIN Itens ON Itens.Pedido_id = Pedidos.Pedido_id
+WHERE Itens.Estado = 'BR-SP'
+GROUP BY Vendedor.Nome_vendedor
+ORDER BY COUNT(*) DESC
+LIMIT 3;
+'''
+
+
+dfSp=sqlConDf(query)
+print(dfSp.head(3))
